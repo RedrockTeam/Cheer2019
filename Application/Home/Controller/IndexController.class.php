@@ -1,12 +1,35 @@
 <?php
+
 namespace Home\Controller;
 
 use Think\Controller;
 
 class IndexController extends Controller
 {
+    const REDIRECT_URI = "https://wx.idsbllp.cn/game/Cheer2019/index.php/Home/Index/info";
+
     public function index()
     {
-        $this->show('<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} body{ background: #fff; font-family: "微软雅黑"; color: #333;font-size:24px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.8em; font-size: 36px } a,a:hover{color:blue;}</style><div style="padding: 24px 48px;"> <h1>:)</h1><p>欢迎使用 <b>ThinkPHP</b>！</p><br/>版本 V{$Think.version}</div><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_55e75dfae343f5a1"></thinkad><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script>','utf-8');
+        return "hello";
+    }
+
+    public function entrance()
+    {
+        $this->redirect(GET_OPENID_URL . urlencode(self::REDIRECT_URI));
+    }
+
+    public function info()
+    {
+        $data = I("get.");
+
+        $openid = $data['openid'];
+        if (empty($openid))
+            returnJson(403, "openid is not found");
+
+        $data = getStuInfoByOpenid($openid);
+
+        cookie("openid", $openid);
+        echo $openid;
+//        $this->redirect(FRONT_ENTRANCE);
     }
 }
