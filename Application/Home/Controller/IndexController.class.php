@@ -43,7 +43,7 @@ class IndexController extends Controller
     {
         $data = I("get.");
         $nickname = $data["nickname"];
-        $headimg_url = $data["headimg_url"];
+        $headimg_url = $data["headimgurl"];
         $openid = $data['openid'];
 
         if (empty($openid))
@@ -57,6 +57,7 @@ class IndexController extends Controller
             header("Location:" . FRONT_ENTRANCE);
         } else {
             $data = getStuInfoByOpenid($openid);
+            exit;
             $modelData = array(
                 "openid" => $openid,
                 "nickname" => $nickname,

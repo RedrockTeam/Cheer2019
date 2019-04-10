@@ -77,7 +77,7 @@ function getStuInfoByOpenid($openid)
     curl_setopt_array($ch, $options);
     $result = curl_exec($ch);
     $result = json_decode($result);
-
+    var_dump($result);
     if ($result->status == 400)
         return null;
 
@@ -100,7 +100,7 @@ function getStuInfoByOpenid($openid)
     curl_setopt_array($ch, $options);
     $result = curl_exec($ch);
     $result = json_decode($result);
-
+    var_dump($result);
     if ($result->status == 200)
         return $result->data;
     else
