@@ -63,6 +63,8 @@ class IndexController extends Controller
             $token = sha1($openid . "redrock@lalala" . $timestamp);
 
             cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
+            header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
+
         } else {
             $data = getStuInfoByOpenid($openid);
 
