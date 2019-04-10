@@ -129,7 +129,7 @@ class IndexController extends Controller
             returnJson(427, "no enough times to vote");
 
         for ($i = 0; $i < 5; $i++) {
-            if ((int)$voteRecords["voteto"] == $voteTo)
+            if (settype($voteRecords["voteto"], "int") == $voteTo)
                 returnJson(426, "you have voted to this team");
         }
 
