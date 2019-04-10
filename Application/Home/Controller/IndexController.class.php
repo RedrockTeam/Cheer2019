@@ -82,7 +82,7 @@ class IndexController extends Controller
             } else {
                 $modelData["stunum"] = $data->usernumber;
                 $modelData["name"] = $data->realname;
-
+                $modelData["college_name"] = $data->collage;
                 switch ($data->collage) {
                     case "现代邮政学院":
                         $modelData["college"] = 9;
