@@ -54,8 +54,6 @@ class IndexController extends Controller
 
         if ($isExist == 1) {
             cookie("openid", $openid);
-            echo "kjj";
-            exit;
             header("Location:" . FRONT_ENTRANCE);
         } else {
             $data = getStuInfoByOpenid($openid);
