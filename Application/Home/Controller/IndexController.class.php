@@ -4,11 +4,13 @@ namespace Home\Controller;
 
 use Firebase\JWT\JWT;
 use Think\Controller;
+use Think\Db;
+use Think\Exception;
 
 class IndexController extends Controller
 {
     private $collegeMapper = array(
-        0 => "未绑定",
+        0 => "测试学院",
         1 => "通信与信息工程学院",
         2 => "计算机科学与技术学院/人工智能学院",
         3 => "自动化学院",
@@ -73,7 +75,18 @@ class IndexController extends Controller
             } else {
                 $modelData["stunum"] = $data->usernumber;
                 $modelData["name"] = $data->realname;
-                $modelData["college"] = $data->collage;
+                if ($data->collage == "现代邮政学院")
+                    $modelData["college"] = 9;
+                else if ($data->collage == "重庆国际半导体学院")
+                    $modelData["college"] = 5;
+                else if ($data->collage == "网络空间安全与信息法学院")
+                    $modelData["college"] = 13;
+                else {
+                    for ($i = 0; $i < count($this->collegeMapper); $i++) {
+                        if ($data->collage[0] == $this->collegeMapper[$i][0])
+                            $modelData["college"] = $i;
+                    }
+                }
             }
 
             $addStatus = $userModel->data($modelData)->add();
@@ -96,9 +109,48 @@ class IndexController extends Controller
         }
     }
 
+    public function _before_userStatus()
+    {
+        if (!IS_POST)
+            returnJson(405);
+    }
+
     public function userStatus()
     {
+        $openid = cookie("openid");
+        if (empty($openid))
+            returnJson(403, "invalid openid");
 
+        $userModel = M("users");
+
+        $user = $userModel->where(array("openid" => $openid))->find();
+
+        $logModel = M("vote_log");
+        $voteRecords = $logModel
+            ->where(array(
+                "userid" => $user["id"],
+                "time" => array("BETWEEN", array(date("Y-m-d 00:00:00", date("Y-m-d 23:59:59"))))
+            ))->select();
+
+        $collegeModel = M("college");
+        $collegeData = $collegeModel->select();
+
+        for ($i = 0; $i < count($collegeData); $i++) {
+            $collegeData[$i]["isPraise"] = 0;
+            for ($j = 0; $j < count($voteRecords); $j++) {
+                if ($voteRecords[$j]["voteto"] == $collegeData[$i]["id"])
+                    $collegeData[$i]["isPraise"] = 1;
+            }
+        }
+
+        $data = array(
+            "college_status" => $collegeData,
+            "surplus_times" => 5 - count($voteRecords),
+            "info" => array(
+                "college" => $user["college"]
+            )
+        );
+        returnJson(200, "success", $data);
     }
 
     public function vote()
@@ -114,14 +166,14 @@ class IndexController extends Controller
         $logModel = M("vote_log");
         $userModel = M("users");
 
-        $userId = $userModel->where(array("openid" => $openid))->getField("id");
+        $user = $userModel->where(array("openid" => $openid))->find();
 
-        if (empty($userId))
+        if (empty($user))
             returnJson(500);
 
         $voteRecords = $logModel
             ->where(array(
-                "userid" => $userId,
+                "userid" => $user["id"],
                 "time" => array("BETWEEN", array(date("Y-m-d 00:00:00", date("Y-m-d 23:59:59"))))
             ))->select();
 
@@ -129,19 +181,23 @@ class IndexController extends Controller
             returnJson(427, "no enough times to vote");
 
         for ($i = 0; $i < 5; $i++) {
-            if (settype($voteRecords["voteto"], "int") == $voteTo)
+            if (settype($voteRecords[$i]["voteto"], "int") == $voteTo)
                 returnJson(426, "you have voted to this team");
         }
 
-        $isInsert = $logModel->data(array(
-            "userid" => $userId,
-            "voteto" => $voteTo,
-            "time" => date("Y-m-d H:i:s")
-        ))->add();
+        try {
+            $isInsert = $logModel->data(array(
+                "userid" => $user["id"],
+                "voteto" => $voteTo,
+                "time" => date("Y-m-d H:i:s")
+            ))->add();
 
-        if ($isInsert)
-            returnJson(200);
-        else
+            if ($isInsert)
+                returnJson(200);
+            else
+                returnJson(500);
+        } catch (Exception $exception) {
             returnJson(500);
+        }
     }
 }
