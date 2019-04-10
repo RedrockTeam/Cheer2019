@@ -15,7 +15,8 @@ class IndexController extends Controller
 
     public function entrance()
     {
-        $this->redirect(GET_OPENID_URL . urlencode(self::REDIRECT_URI));
+        $url = GET_OPENID_URL . urlencode(self::REDIRECT_URI);
+        header("Location:" . $url);
     }
 
     public function info()
