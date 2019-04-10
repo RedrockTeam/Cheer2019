@@ -150,13 +150,17 @@ class IndexController extends Controller
                 if ($voteRecords[$j]["voteto"] == $collegeData[$i]["id"])
                     $collegeData[$i]["isPraise"] = 1;
             }
+            $collegeData[$i]['id'] = (int)$collegeData[$i]['id'];
+            $collegeData[$i]['native_num'] = (int)$collegeData[$i]['native_num'];
+            $collegeData[$i]['foreign_num'] = (int)$collegeData[$i]['foreign_num'];
+            $collegeData[$i]['in_num'] = (int)$collegeData[$i]['in_num'];
         }
 
         $data = array(
             "college_status" => $collegeData,
             "surplus_times" => 5 - count($voteRecords),
             "info" => array(
-                "college" => $user["college"]
+                "college" => (int)$user["college"]
             )
         );
         returnJson(200, "success", $data);
