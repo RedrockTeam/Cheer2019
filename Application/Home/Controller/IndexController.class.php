@@ -221,13 +221,13 @@ class IndexController extends Controller
         if (I("get.auth") != "lalala")
             $this->error();
 
-        try {
+//        try {
             M()->query("UPDATE `colleges` 
 SET colleges.native_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college = colleges.id ),
 colleges.foreign_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college != colleges.id )");
             returnJson(200);
-        } catch (Exception $exception) {
-            returnJson(500);
-        }
+//        } catch (Exception $exception) {
+//            returnJson(500);
+//        }
     }
 }
