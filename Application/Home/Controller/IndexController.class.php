@@ -167,7 +167,7 @@ class IndexController extends Controller
         $user = $userModel->where(array("openid" => $openid))->find();
 
         if (empty($user))
-            returnJson(500);
+            returnJson(403, "invalid openid");
 
         $voteRecords = $logModel
             ->where(array(
@@ -187,6 +187,7 @@ class IndexController extends Controller
             $isInsert = $logModel->data(array(
                 "userid" => $user["id"],
                 "voteto" => $voteTo,
+                "user_college" => $user["college"],
                 "time" => date("Y-m-d H:i:s")
             ))->add();
 
