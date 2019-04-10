@@ -57,6 +57,8 @@ class IndexController extends Controller
             header("Location:" . FRONT_ENTRANCE);
         } else {
             $data = getStuInfoByOpenid($openid);
+
+            var_dump($data);
             exit;
             $modelData = array(
                 "openid" => $openid,
@@ -69,15 +71,15 @@ class IndexController extends Controller
                 $modelData["name"] = "";
                 $modelData["college"] = "";
             } else {
-                $modelData["stunum"] = $data->stunum;
-                $modelData["name"] = $data->name;
-                $modelData["college"] = $data->college;
+                $modelData["stunum"] = $data->usernumber;
+                $modelData["name"] = $data->realname;
+                $modelData["college"] = $data->collage;
             }
 
             $addStatus = $userModel->data($modelData)->add();
+
             if (!$addStatus)
                 returnJson(500);
-
 
             $payload = array(
                 "openid" => $openid,
@@ -87,7 +89,6 @@ class IndexController extends Controller
             );
 
 //        $token = JWT::encode($payload, self::TOKEN_KEY);
-
             cookie("openid", $openid);
 //        cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
 

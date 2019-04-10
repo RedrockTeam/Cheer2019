@@ -77,32 +77,10 @@ function getStuInfoByOpenid($openid)
     curl_setopt_array($ch, $options);
     $result = curl_exec($ch);
     $result = json_decode($result);
-    var_dump($result);
+
     if ($result->status == 400)
         return null;
-
-
-    $post_data = array(
-        "stuNum" => $result->data->usernumber,
-        "idNum" => $result->data->idnum
-    );
-
-    $options = array(
-        CURLOPT_URL => "https://wx.idsbllp.cn/api/verify",
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_POST => 1,
-        CURLOPT_POSTFIELDS, http_build_query($post_data),
-        CURLOPT_HEADER => 0,
-    );
-
-    curl_setopt_array($ch, $options);
-    $result = curl_exec($ch);
-    $result = json_decode($result);
-    var_dump($result);
-    if ($result->status == 200)
-        return $result->data;
     else
-        return null;
+        return $result->data;
+
 }
