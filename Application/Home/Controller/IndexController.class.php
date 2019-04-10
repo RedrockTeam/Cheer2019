@@ -130,7 +130,7 @@ class IndexController extends Controller
                 "time" => array("BETWEEN", array(date("Y-m-d 00:00:00"), date("Y-m-d 23:59:59")))
             ))->select();
 
-        $collegeModel = M("college");
+        $collegeModel = M("colleges");
         $collegeData = $collegeModel->select();
 
         for ($i = 0; $i < count($collegeData); $i++) {
