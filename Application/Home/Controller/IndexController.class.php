@@ -127,7 +127,7 @@ class IndexController extends Controller
         $voteRecords = $logModel
             ->where(array(
                 "userid" => $user["id"],
-                "time" => array("BETWEEN", array(date("Y-m-d 00:00:00", date("Y-m-d 23:59:59"))))
+                "time" => array("BETWEEN", array(date("Y-m-d 00:00:00"), date("Y-m-d 23:59:59")))
             ))->select();
 
         $collegeModel = M("college");
