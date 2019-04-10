@@ -85,17 +85,32 @@ class IndexController extends Controller
             } else {
                 $modelData["stunum"] = $data->usernumber;
                 $modelData["name"] = $data->realname;
-                if ($data->collage == "现代邮政学院")
-                    $modelData["college"] = 9;
-                else if ($data->collage == "重庆国际半导体学院")
-                    $modelData["college"] = 5;
-                else if ($data->collage == "网络空间安全与信息法学院")
-                    $modelData["college"] = 13;
-                else {
-                    for ($i = 0; $i < count($this->collegeMapper); $i++) {
-                        if ($data->collage[0] == $this->collegeMapper[$i][0])
-                            $modelData["college"] = $i;
-                    }
+
+                switch ($data->collage) {
+                    case "现代邮政学院":
+                        $modelData["college"] = 9;
+                        break;
+                    case "重庆国际半导体学院":
+                        $modelData["college"] = 5;
+                        break;
+                    case "网络空间安全与信息法学院":
+                        $modelData["college"] = 13;
+                        break;
+                    case "计算机学院":
+                        $modelData["college"] = 2;
+                        break;
+                    case "光电学院":
+                        $modelData["college"] = 5;
+                        break;
+                    case "生物学院":
+                        $modelData["college"] = 7;
+                        break;
+                    default:
+                        for ($i = 0; $i < count($this->collegeMapper); $i++) {
+                            if ($data->collage[0] == $this->collegeMapper[$i][0])
+                                $modelData["college"] = $i;
+                        }
+                        break;
                 }
             }
 
@@ -104,16 +119,15 @@ class IndexController extends Controller
             if (!$addStatus)
                 returnJson(500);
 
-            $payload = array(
-                "openid" => $openid,
-                "iss" => self::ISS,
-                "iat" => time(),
-                "nbf" => time() + 3600
-            );
 
 //            $token = JWT::encode($payload, self::TOKEN_KEY);
             cookie("openid", $openid);
-//            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
+            $timestamp = time() + 3600;
+            cookie("_e", $timestamp);
+
+            $token = sha1($openid . "redrock@lalala" . $timestamp);
+
+            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
 
             header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
         }
@@ -123,13 +137,18 @@ class IndexController extends Controller
     {
         if (!IS_POST)
             returnJson(405);
+        $openid = cookie("openid");
+        if (empty($openid))
+            returnJson(403, "invalid openid");
+
+        $expire = cookie("_e");
+        if (cookie("_t") != sha1($openid . "redrock@lalala" . $expire))
+            returnJson(428, "invalid token or expire");
     }
 
     public function userStatus()
     {
         $openid = cookie("openid");
-        if (empty($openid))
-            returnJson(403, "invalid openid");
 
         $userModel = M("users");
 
@@ -165,6 +184,19 @@ class IndexController extends Controller
             )
         );
         returnJson(200, "success", $data);
+    }
+
+    public function _before_vote()
+    {
+        if (!IS_POST)
+            returnJson(405);
+        $openid = cookie("openid");
+        if (empty($openid))
+            returnJson(403, "invalid openid");
+
+        $expire = cookie("_e");
+        if (cookie("_t") != sha1($openid . "redrock@lalala" . $expire))
+            returnJson(428, "invalid token or expire");
     }
 
     public function vote()
