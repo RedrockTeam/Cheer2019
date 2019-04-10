@@ -222,7 +222,7 @@ class IndexController extends Controller
             $this->error();
 
         try {
-            M("")->query("UPDATE `colleges` 
+            M()->query("UPDATE `colleges` 
 SET colleges.native_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college = colleges.id ),
 colleges.foreign_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college != colleges.id )");
             returnJson(200);
