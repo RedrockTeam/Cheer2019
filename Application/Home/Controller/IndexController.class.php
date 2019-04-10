@@ -2,7 +2,7 @@
 
 namespace Home\Controller;
 
-use Firebase\JWT\JWT;
+//use Firebase\JWT\JWT;
 use Think\Controller;
 use Think\Exception;
 
@@ -55,16 +55,16 @@ class IndexController extends Controller
         $isExist = $userModel->where(array("openid" => $openid))->count();
 
         if ($isExist == 1) {
-            $payload = array(
-                "openid" => $openid,
-                "iss" => self::ISS,
-                "iat" => time(),
-                "nbf" => time() + 3600
-            );
-            $token = JWT::encode($payload, self::TOKEN_KEY);
+//            $payload = array(
+//                "openid" => $openid,
+//                "iss" => self::ISS,
+//                "iat" => time(),
+//                "nbf" => time() + 3600
+//            );
+//            $token = JWT::encode($payload, self::TOKEN_KEY);
 
             cookie("openid", $openid);
-            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
+//            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
 
             header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
         } else {
@@ -110,9 +110,9 @@ class IndexController extends Controller
                 "nbf" => time() + 3600
             );
 
-            $token = JWT::encode($payload, self::TOKEN_KEY);
+//            $token = JWT::encode($payload, self::TOKEN_KEY);
             cookie("openid", $openid);
-            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
+//            cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
 
             header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
         }
