@@ -33,7 +33,7 @@ class IndexController extends Controller
             returnJson(403, "openid is not found");
 
         $data = getStuInfoByOpenid($openid);
-        var_dump($data);
+
 
         $payload = array(
             "openid" => $openid,
