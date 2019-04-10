@@ -2,9 +2,7 @@
 
 namespace Home\Controller;
 
-use Firebase\JWT\JWT;
 use Think\Controller;
-use Think\Db;
 use Think\Exception;
 
 class IndexController extends Controller
@@ -181,7 +179,7 @@ class IndexController extends Controller
             returnJson(427, "no enough times to vote");
 
         for ($i = 0; $i < 5; $i++) {
-            if (settype($voteRecords[$i]["voteto"], "int") == $voteTo)
+            if ((int)$voteRecords[$i]["voteto"] == $voteTo)
                 returnJson(426, "you have voted to this team");
         }
 
