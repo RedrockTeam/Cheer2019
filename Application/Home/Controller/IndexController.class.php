@@ -4,6 +4,7 @@ namespace Home\Controller;
 
 //use Firebase\JWT\JWT;
 use Think\Controller;
+use Think\Db;
 use Think\Exception;
 
 class IndexController extends Controller
@@ -49,7 +50,7 @@ class IndexController extends Controller
         $openid = $data['openid'];
 
         if (empty($openid))
-            returnJson(403, "openid is not found");
+            $this->error("你好像还没有关注公众号或者打开方式错误哦！");
 
         $userModel = M("users");
         $isExist = $userModel->where(array("openid" => $openid))->count();
@@ -210,6 +211,21 @@ class IndexController extends Controller
                 returnJson(200);
             else
                 returnJson(500);
+        } catch (Exception $exception) {
+            returnJson(500);
+        }
+    }
+
+    public function cacheUpdate()
+    {
+        if (I("get.auth") != "lalala")
+            $this->error();
+
+        try {
+            M("colleges")->query("UPDATE `colleges` 
+SET colleges.native_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college = colleges.id ),
+colleges.foreign_num = ( SELECT COUNT( id ) FROM vote_log WHERE colleges.id = vote_log.voteto AND vote_log.user_college != colleges.id )");
+            returnJson(200);
         } catch (Exception $exception) {
             returnJson(500);
         }
