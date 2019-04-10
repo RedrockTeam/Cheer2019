@@ -58,8 +58,7 @@ class IndexController extends Controller
         } else {
             $data = getStuInfoByOpenid($openid);
 
-            var_dump($data);
-            exit;
+
             $modelData = array(
                 "openid" => $openid,
                 "nickname" => $nickname,
@@ -78,6 +77,8 @@ class IndexController extends Controller
 
             $addStatus = $userModel->data($modelData)->add();
 
+            var_dump($modelData);
+            exit;
             if (!$addStatus)
                 returnJson(500);
 
