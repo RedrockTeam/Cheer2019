@@ -1,7 +1,7 @@
 <?php
 const GET_OPENID_URL = "https://wx.idsbllp.cn/MagicLoop/index.php?s=/addon/Api/Api/oauth&redirect=";
 
-const FRONT_ENTRANCE = "";
+const FRONT_ENTRANCE = "https://wx.idsbllp.cn/game/Cheer2019/index.php/Home/Index/index";
 
 function returnJson($status, $info = "", $data = array())
 {
