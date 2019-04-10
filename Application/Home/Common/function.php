@@ -82,5 +82,4 @@ function getStuInfoByOpenid($openid)
         return null;
     else
         return $result->data;
-
 }

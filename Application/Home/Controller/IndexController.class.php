@@ -8,6 +8,7 @@ use Think\Controller;
 class IndexController extends Controller
 {
     private $collegeMapper = array(
+        0 => "未绑定",
         1 => "通信与信息工程学院",
         2 => "计算机科学与技术学院/人工智能学院",
         3 => "自动化学院",
@@ -98,5 +99,49 @@ class IndexController extends Controller
     public function userStatus()
     {
 
+    }
+
+    public function vote()
+    {
+        $openid = cookie("openid");
+        if (empty($openid))
+            returnJson(403, "invalid openid");
+
+        $voteTo = (int)I("post.vote_to");
+        if (!is_numeric($voteTo) || ($voteTo > 13 && $voteTo < 1))
+            returnJson(400, "invalid parameter");
+
+        $logModel = M("vote_log");
+        $userModel = M("users");
+
+        $userId = $userModel->where(array("openid" => $openid))->getField("id");
+
+        if (empty($userId))
+            returnJson(500);
+
+        $voteRecords = $logModel
+            ->where(array(
+                "userid" => $userId,
+                "time" => array("BETWEEN", array(date("Y-m-d 00:00:00", date("Y-m-d 23:59:59"))))
+            ))->select();
+
+        if (count($voteRecords) >= 5)
+            returnJson(427, "no enough times to vote");
+
+        for ($i = 0; $i < 5; $i++) {
+            if ((int)$voteRecords["userid"] == (int)$userId && (int)$voteRecords["voteto"] == (int)$voteTo)
+                returnJson(426, "you have voted to this team");
+        }
+
+        $isInsert = $logModel->data(array(
+            "userid" => $userId,
+            "voteto" => $voteTo,
+            "time" => date("Y-m-d H:i:s")
+        ))->add();
+
+        if ($isInsert)
+            returnJson(200);
+        else
+            returnJson(500);
     }
 }
