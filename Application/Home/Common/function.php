@@ -93,7 +93,7 @@ function getStuInfoByOpenid($openid)
         CURLOPT_SSL_VERIFYHOST => false,
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_POST => 1,
-        CURLOPT_POSTFIELDS, $post_data,
+        CURLOPT_POSTFIELDS, http_build_query($post_data),
         CURLOPT_HEADER => 0,
     );
 
