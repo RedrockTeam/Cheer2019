@@ -79,6 +79,7 @@ class IndexController extends Controller
                 $modelData["stunum"] = "";
                 $modelData["name"] = "";
                 $modelData["college"] = "";
+                $modelData["college_name"] = "无";
             } else {
                 $modelData["stunum"] = $data->usernumber;
                 $modelData["name"] = $data->realname;
@@ -101,6 +102,9 @@ class IndexController extends Controller
                         break;
                     case "生物学院":
                         $modelData["college"] = 7;
+                        break;
+                    case "安法学院":
+                        $modelData["college"] = 13;
                         break;
                     default:
                         for ($i = 0; $i < count($this->collegeMapper); $i++) {
