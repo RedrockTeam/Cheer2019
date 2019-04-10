@@ -55,7 +55,7 @@ class IndexController extends Controller
 
         if ($isExist == 1) {
             cookie("openid", $openid);
-            header("Location:" . FRONT_ENTRANCE);
+            header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
         } else {
             $data = getStuInfoByOpenid($openid);
 
@@ -103,7 +103,7 @@ class IndexController extends Controller
             cookie("openid", $openid);
 //        cookie("_t", $token, array('expire' => 3600, 'httponly' => TRUE));
 
-            header("Location:" . FRONT_ENTRANCE);
+            header("Location:" . FRONT_ENTRANCE . "?r=" . rand());
         }
     }
 
