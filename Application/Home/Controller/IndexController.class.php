@@ -2,7 +2,7 @@
 
 namespace Home\Controller;
 
-use Firebase\JWT\JWT;
+use JWT;
 use Think\Controller;
 
 class IndexController extends Controller
