@@ -50,10 +50,12 @@ class IndexController extends Controller
             returnJson(403, "openid is not found");
 
         $userModel = M("users");
-        $isExist = $userModel->where(array("openid" => $openid))->find();
+        $isExist = $userModel->where(array("openid" => $openid))->count();
 
         if ($isExist == 1) {
             cookie("openid", $openid);
+            echo "kjj";
+            exit;
             header("Location:" . FRONT_ENTRANCE);
         } else {
             $data = getStuInfoByOpenid($openid);
@@ -77,8 +79,6 @@ class IndexController extends Controller
 
             $addStatus = $userModel->data($modelData)->add();
 
-            var_dump($modelData);
-            exit;
             if (!$addStatus)
                 returnJson(500);
 
