@@ -44,10 +44,27 @@ function returnJson($status, $info = "", $data = array())
     exit;
 }
 
+const IS_LEGAL_API = "https://wx.idsbllp.cn/MagicLoop/index.php?s=/addon/Api/Api/isOpenidLegal";
+
 function getStuInfoByOpenid($openid)
 {
     if (empty($openid))
-        return null;
+        returnJson(403, "illegal openid!");
+
+    $ch = curl_init();
+    $options = array(
+        CURLOPT_URL => "https://wx.idsbllp.cn/MagicLoop/index.php?s=/addon/UserCenter/UserCenter/getStuInfoByOpenId&openId=" . $openid,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_HEADER => 0,
+    );
+    curl_setopt_array($ch, $options);
+    $isLegal = curl_exec($ch);
+    $isLegal = json_decode($isLegal);
+
+    if ($isLegal->status != 200)
+        returnJson(403, "illegal openid!");
 
     $ch = curl_init();
     $options = array(
@@ -62,7 +79,7 @@ function getStuInfoByOpenid($openid)
     $result = json_decode($result);
 
     if ($result->status == 400)
-        return false;
+        return null;
 
 
     $post_data = array(
@@ -87,5 +104,5 @@ function getStuInfoByOpenid($openid)
     if ($result->status == 200)
         return $result->data;
     else
-        return false;
+        return null;
 }
