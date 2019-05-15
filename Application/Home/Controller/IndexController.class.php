@@ -173,6 +173,9 @@ class IndexController extends Controller
             $collegeData[$i]['id'] = (int)$collegeData[$i]['id'];
             $collegeData[$i]['native_num'] = (int)$collegeData[$i]['native_num'];
             $collegeData[$i]['foreign_num'] = (int)$collegeData[$i]['foreign_num'];
+
+            $collegeData[$i]["created_at"]=date("Y-m-d H:i:s"); //日期 Y-m-d H:i:s 格式 使用date函数进行格式化
+        
             $collegeData[$i]['in_num'] = (int)$collegeData[$i]['in_num'];
         }
 
@@ -186,6 +189,7 @@ class IndexController extends Controller
         returnJson(200, "success", $data);
     }
 
+    //投票前置操作
     public function _before_vote()
     {
         if (!IS_POST)
@@ -195,13 +199,16 @@ class IndexController extends Controller
             returnJson(403, "invalid openid");
 
         $expire = cookie("_e");
+        //_t token参数 用于本地存储JWT http only expire in 3600
         if (cookie("_t") != sha1($openid . "redrock@lalala" . $expire))
             returnJson(428, "invalid token or expire");
     }
 
+    //投票操作
     public function vote()
     {
         $openid = cookie("openid");
+        //openid验证
         if (empty($openid))
             returnJson(403, "invalid openid");
 

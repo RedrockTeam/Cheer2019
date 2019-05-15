@@ -3,6 +3,8 @@ const GET_OPENID_URL = "https://wx.idsbllp.cn/MagicLoop/index.php?s=/addon/Api/A
 
 const FRONT_ENTRANCE = "https://wx.idsbllp.cn/game/cheer/index.html";
 
+const TOKEN="redrock@2019";
+
 function returnJson($status, $info = "", $data = array())
 {
     switch ($status) {
