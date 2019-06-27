@@ -212,13 +212,18 @@ class IndexController extends Controller
         if (empty($openid))
             returnJson(403, "invalid openid");
 
+        //投票数量验证
         $voteTo = (int)I("post.vote_to");
-        if (!is_numeric($voteTo) || ($voteTo > 13 && $voteTo < 1))
+
+        //修改判断逻辑，确定投票时的学生身份
+        if (!is_numeric($voteTo0:?is_numeric($voteTo):is_array($voteTo))
             returnJson(400, "invalid parameter");
 
+        //模型初始化 投票log 用户模型层
         $logModel = M("vote_log");
         $userModel = M("users");
 
+        //模型层 筛选对应openid用户
         $user = $userModel->where(array("openid" => $openid))->find();
 
         if (empty($user))
@@ -233,11 +238,15 @@ class IndexController extends Controller
         if (count($voteRecords) >= 5)
             returnJson(427, "no enough times to vote");
 
+        //for循环可以考虑进行优化--检测到非空时进行循环终端
         for ($i = 0; $i < 5; $i++) {
             if ((int)$voteRecords[$i]["voteto"] == $voteTo)
                 returnJson(426, "you have voted to this team");
         }
 
+        //异常处理
+        //catch SQLexception
+        //获取异常之后。返回500然后报线上log
         try {
             $isInsert = $logModel->data(array(
                 "userid" => $user["id"],
